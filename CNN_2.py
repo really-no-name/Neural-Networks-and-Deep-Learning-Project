@@ -81,11 +81,11 @@ loss_fn = loss_fn.to(device)
 # learning_rate = 1e-2
 # optimizer = torch.optim.SGD(tudui.parameters(), lr=learning_rate)
 # 设置较低的初始学习率
-learning_rate = 1e-3
+learning_rate = 1e-4
 # 使用Adam优化器
 optimizer = torch.optim.Adam(tudui.parameters(), lr=learning_rate)
 # 可选：设置学习率衰减
-scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=30, gamma=0.1)
+# scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=30, gamma=0.1)
 
 # 设置训练网络的一些参数
 # 记录训练的次数
@@ -93,7 +93,7 @@ total_train_step = 0
 # 记录测试的次数
 total_test_step = 0
 # 训练的轮数
-epoch = 15
+epoch = 20
 
 # 添加tensorboard
 writer = SummaryWriter("../logs_train")
@@ -114,7 +114,7 @@ for i in range(epoch):
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
-        scheduler.step()  # 在每个epoch后更新学习率
+        # scheduler.step()  # 在每个epoch后更新学习率
 
         total_train_step = total_train_step + 1
         if total_train_step % 100 == 0:
@@ -142,7 +142,7 @@ for i in range(epoch):
     writer.add_scalar("test_accuracy", total_accuracy/test_data_size, total_test_step)
     total_test_step = total_test_step + 1
 
-    torch.save(tudui, "tudui_{}.pth".format(i))
-    print("模型已保存")
+    # torch.save(tudui, "tudui_{}.pth".format(i))
+    # print("模型已保存")
 
 writer.close()
