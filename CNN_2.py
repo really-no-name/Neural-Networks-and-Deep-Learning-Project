@@ -77,9 +77,15 @@ loss_fn = loss_fn.to(device)
 # 优化器
 # learning_rate = 0.01
 # 1e-2=1 x (10)^(-2) = 1 /100 = 0.01
-#
-learning_rate = 1e-2
-optimizer = torch.optim.SGD(tudui.parameters(), lr=learning_rate)
+# SGD 优化器
+# learning_rate = 1e-2
+# optimizer = torch.optim.SGD(tudui.parameters(), lr=learning_rate)
+# 设置较低的初始学习率
+learning_rate = 1e-3
+# 使用Adam优化器
+optimizer = torch.optim.Adam(tudui.parameters(), lr=learning_rate)
+# 可选：设置学习率衰减
+scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=30, gamma=0.1)
 
 # 设置训练网络的一些参数
 # 记录训练的次数
@@ -108,6 +114,7 @@ for i in range(epoch):
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
+        scheduler.step()  # 在每个epoch后更新学习率
 
         total_train_step = total_train_step + 1
         if total_train_step % 100 == 0:
