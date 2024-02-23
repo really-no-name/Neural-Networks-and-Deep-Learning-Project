@@ -31,16 +31,38 @@ test_dataloader = DataLoader(test_data, batch_size=64)
 class Tudui(nn.Module):
     def __init__(self):
         super(Tudui, self).__init__()
+        # self.model = nn.Sequential(
+        #     nn.Conv2d(3, 32, 5, 1, 2),
+        #     nn.MaxPool2d(2),
+        #     nn.Conv2d(32, 32, 5, 1, 2),
+        #     nn.MaxPool2d(2),
+        #     nn.Conv2d(32, 64, 5, 1, 2),
+        #     nn.MaxPool2d(2),
+        #     nn.Flatten(),
+        #     nn.Linear(64*4*4, 64),
+        #     nn.Linear(64, 10)
+        # )
         self.model = nn.Sequential(
-            nn.Conv2d(3, 32, 5, 1, 2),
-            nn.MaxPool2d(2),
-            nn.Conv2d(32, 32, 5, 1, 2),
-            nn.MaxPool2d(2),
-            nn.Conv2d(32, 64, 5, 1, 2),
-            nn.MaxPool2d(2),
+            nn.Conv2d(3, 64, 3, padding=1),
+            nn.BatchNorm2d(64),
+            nn.ReLU(),
+            nn.MaxPool2d(2, 2),
+
+            nn.Conv2d(64, 128, 3, padding=1),
+            nn.BatchNorm2d(128),
+            nn.ReLU(),
+            nn.MaxPool2d(2, 2),
+
+            nn.Conv2d(128, 256, 3, padding=1),
+            nn.BatchNorm2d(256),
+            nn.ReLU(),
+            nn.MaxPool2d(2, 2),
+
             nn.Flatten(),
-            nn.Linear(64*4*4, 64),
-            nn.Linear(64, 10)
+            nn.Linear(256 * 4 * 4, 1024),
+            nn.ReLU(),
+            nn.Dropout(0.5),
+            nn.Linear(1024, 10)
         )
 
     def forward(self, x):
@@ -55,6 +77,7 @@ loss_fn = loss_fn.to(device)
 # 优化器
 # learning_rate = 0.01
 # 1e-2=1 x (10)^(-2) = 1 /100 = 0.01
+#
 learning_rate = 1e-2
 optimizer = torch.optim.SGD(tudui.parameters(), lr=learning_rate)
 
@@ -64,7 +87,7 @@ total_train_step = 0
 # 记录测试的次数
 total_test_step = 0
 # 训练的轮数
-epoch = 10
+epoch = 15
 
 # 添加tensorboard
 writer = SummaryWriter("../logs_train")
