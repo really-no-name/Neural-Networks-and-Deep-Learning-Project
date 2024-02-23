@@ -61,7 +61,7 @@ class Tudui(nn.Module):
             nn.Flatten(),
             nn.Linear(256 * 4 * 4, 1024),
             nn.ReLU(),
-            nn.Dropout(0.5),
+            nn.Dropout(0.7),
             nn.Linear(1024, 10)
         )
 
